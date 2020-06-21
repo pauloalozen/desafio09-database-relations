@@ -2,6 +2,8 @@ import { getRepository, Repository } from 'typeorm';
 
 import ICustomersRepository from '@modules/customers/repositories/ICustomersRepository';
 import ICreateCustomerDTO from '@modules/customers/dtos/ICreateCustomerDTO';
+import AppError from '@shared/errors/AppError';
+import { isUuid } from 'uuidv4';
 import Customer from '../entities/Customer';
 
 class CustomersRepository implements ICustomersRepository {
@@ -23,9 +25,17 @@ class CustomersRepository implements ICustomersRepository {
   }
 
   public async findById(id: string): Promise<Customer | undefined> {
-    const findCustomer = await this.ormRepository.findOne(id);
+    if (!isUuid(id)) {
+      throw new AppError('Customer code is not valid', 400);
+    }
 
-    return findCustomer;
+    const customer = await this.ormRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    return customer;
   }
 
   public async findByEmail(email: string): Promise<Customer | undefined> {

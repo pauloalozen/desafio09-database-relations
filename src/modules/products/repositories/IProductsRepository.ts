@@ -12,4 +12,5 @@ export default interface IProductsRepository {
   findByName(name: string): Promise<Product | undefined>;
   findAllById(products: IFindProducts[]): Promise<Product[]>;
   updateQuantity(products: IUpdateProductsQuantityDTO[]): Promise<Product[]>;
+  listAll(): Promise<Product[]>;
 }
